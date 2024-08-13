@@ -1,6 +1,6 @@
 import { FaSearch } from "react-icons/fa";
 import {NavLink, Link} from "react-router-dom";
-const Header = () => {
+const NavBar = () => {
   return (
     <header className="bg-slate-300 shadow-xl  ">
       <div className="flex justify-between items-center  mx-auto p-4">
@@ -26,4 +26,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default NavBar;

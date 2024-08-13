@@ -5,14 +5,14 @@ import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import About from "./pages/About";
 import NotFound from "./pages/NotFound";
-import Header from "./components/Header";
+import NavBar from "./components/NavBar";
 import { BrowserRouter } from "react-router-dom";
 const App = () => {
   return (
     <>
 
       <BrowserRouter>
-      <Header />
+      <NavBar />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/signup" element={<SignUp />} />
