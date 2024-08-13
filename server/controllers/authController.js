@@ -1,6 +1,7 @@
 const userModel = require("../models/userModel");
 const { catchAsync } = require("../middlewares/catchAsync");
 const ErrorHandler = require("../middlewares/errorMiddleware");
+const { error } = require("console");
 
 exports.userSignUpController =  async (req, res, next) =>{
 
@@ -18,6 +19,7 @@ exports.userSignUpController =  async (req, res, next) =>{
             email,
             password
         });
+        
         res.status(201).json({
             success: "true",
             message:"User created successfully",
@@ -26,8 +28,23 @@ exports.userSignUpController =  async (req, res, next) =>{
     }
     catch(err){
         console.log(err);
+        
         return next(new ErrorHandler(err.message, 500));
     }
    
 
 };     
+
+exports.userSignInController = catchAsync(async (req, res, next) => {
+    const {email, password} = req.bod;
+    if(!email || !password){
+        return next(new ErrorHandler("Please provide email and password", 400));
+    }
+    try{
+        const user = await userModel.findOne({email});
+    }
+    catch(err){
+        console.log(err);
+
+    }
+})

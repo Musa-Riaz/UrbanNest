@@ -7,11 +7,18 @@ import About from "./pages/About";
 import NotFound from "./pages/NotFound";
 import NavBar from "./components/NavBar";
 import { BrowserRouter } from "react-router-dom";
+import Spinner from "./components/Spinner";
+import {useSelector, useDispatch} from 'react-redux'
+import { setLoading } from "./redux/features/loadingSlice";
+
 const App = () => {
+
+  const {isLoading} = useSelector((state) => state.loading);
+
   return (
     <>
-
-      <BrowserRouter>
+  {isLoading ? <Spinner /> : 
+   <BrowserRouter>
       <NavBar />
         <Routes>
           <Route path="/" element={<Home />} />
@@ -20,7 +27,9 @@ const App = () => {
           <Route path="/about" element={<About />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
-      </BrowserRouter>
+      </BrowserRouter> }
+
+     
     </>
   );
 };
