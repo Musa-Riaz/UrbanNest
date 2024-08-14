@@ -2,7 +2,7 @@ class ErrorHandler extends Error {
     constructor(message, statusCode){
         super(message);
         this.statusCode = statusCode;
-
+        Error.captureStackTrace(this, this.constructor); // captures where the error occurred
     }
 }
 
@@ -15,6 +15,6 @@ exports.errorMiddleware = (err, req, res, next) => {
         statusCode,
         message
     });
-}
+};
 
 module.exports = ErrorHandler;

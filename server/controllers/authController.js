@@ -1,7 +1,7 @@
 const userModel = require("../models/userModel");
 const { catchAsync } = require("../middlewares/catchAsync");
+const jwt = require("jsonwebtoken");
 const ErrorHandler = require("../middlewares/errorMiddleware");
-const { error } = require("console");
 
 exports.userSignUpController =  async (req, res, next) =>{
 
@@ -36,15 +36,36 @@ exports.userSignUpController =  async (req, res, next) =>{
 };     
 
 exports.userSignInController = catchAsync(async (req, res, next) => {
-    const {email, password} = req.bod;
+    const {email, password} = req.body;
     if(!email || !password){
         return next(new ErrorHandler("Please provide email and password", 400));
     }
     try{
         const user = await userModel.findOne({email});
+        if(!user){
+             next( new ErrorHandler("Invalid Email or Password", 400));
+
+        }
+        const isPasswordMatched = await user.matchPasswords(password);
+        if(isPasswordMatched){
+            const token = await jwt.sign({id: user._id}, process.env.JWT_SECRET);
+            res.cookie('access_token', token, {httpOnly: true}).status(200).json({
+                success: "true",
+                message: "User logged in successfully", 
+                token,
+                user
+               
+            });
+            
+        }
+        else{
+            return next(new ErrorHandler("Invalid Email or Password", 401));
+        }
+
+       
     }
     catch(err){
         console.log(err);
-
+        
     }
 })

@@ -5,8 +5,8 @@ const morgan = require("morgan");
 const dotenv = require("dotenv");
 const userRouter = require("./routes/userRouter");
 const authRouter = require("./routes/authRouter");
+const cookieParser = require("cookie-parser");
 const errorMiddleware = require("./middlewares/errorMiddleware");
-
 const app = express();
 dotenv.config({path: "../config.env"});  
 
@@ -19,9 +19,11 @@ mongoose.connect(process.env.DB_STRING, {
 });
 
 
-app.use(cors());
+app.use(cors({credentials: true, origin: "http://localhost:5173"}));
 app.use(morgan("dev"));
 app.use(express.json());
+app.use(cookieParser({ }));
+
 
 app.use("/api/v1/auth", authRouter);
 
