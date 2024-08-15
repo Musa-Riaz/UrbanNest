@@ -72,7 +72,7 @@ exports.userGoogleController = catchAsync(async (req, res, next) => {
     } else {
       const generatePassword = Math.random().toString(36).slice(-8); //Generating the random password for the new user who signs up with google
       const newUser = await userModel.create({
-        username: req.body.name,
+        name: req.body.name,
         email: req.body.email,
         password: generatePassword,
         googleId: req.body.googleId,

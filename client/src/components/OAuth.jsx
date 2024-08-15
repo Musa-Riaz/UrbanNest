@@ -4,7 +4,7 @@ import { GoogleAuthProvider, getAuth, signInWithPopup } from 'firebase/auth';
 import { app } from '../Firebase/firebase';
 import axios from 'axios'
 import { useDispatch, useSelector } from 'react-redux';
-import { setUser} from '../redux/features/userSlice';
+import { setUser, setAuth} from '../redux/features/userSlice';
 import {  useNavigate } from "react-router-dom";
 const OAuth = () => {
     const dispatch = useDispatch();
@@ -25,6 +25,7 @@ const OAuth = () => {
             });
             if(res.data.success){
                 dispatch(setUser(res.data.user));
+                dispatch(setAuth(true));
                 localStorage.setItem("access_token", res.data.token);
                 message.success("Successfully signed in with Google");
                 navigate("/")

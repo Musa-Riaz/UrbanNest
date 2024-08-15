@@ -6,7 +6,7 @@ import storage from 'redux-persist/lib/storage' // defaults to localStorage for 
 import { combineReducers } from "redux";
 const rootReducer = combineReducers({
     loading: loadingSlice.reducer,
-    user: userSlice.reducer
+    user: userSlice.reducer,
 });
 
 const persistConfig = {

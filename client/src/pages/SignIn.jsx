@@ -5,7 +5,7 @@ import { message } from "antd";
 import { useSelector, useDispatch } from "react-redux";
 import {setLoading, hideLoading} from "../redux/features/loadingSlice";
 import cookie from 'cookie-parser';
-import {setUser} from "../redux/features/userSlice";
+import {setUser, setAuth} from "../redux/features/userSlice";
 import OAuth from "../components/OAuth";
 
 import {useNavigate } from "react-router-dom";
@@ -30,12 +30,14 @@ const SignIn = () => {
         message.success(res.data.message);
         localStorage.setItem("token", res.data.token);
         dispatch(setUser(res.data.user));
+        dispatch(setAuth(true));
         navigate("/");
       } else {
         message.error(res.data.message);
       }
     } catch (err) {
       dispatch(hideLoading());
+      dispatch(setAuth(false));
       console.log(err);
       message.error(err.message);
     }

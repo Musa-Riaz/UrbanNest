@@ -1,6 +1,10 @@
 import { FaSearch } from "react-icons/fa";
 import {NavLink, Link} from "react-router-dom";
+import {useDispatch, useSelector} from 'react-redux';
 const NavBar = () => {
+
+  const {user} = useSelector((state) => state.user);
+
   return (
     <header className="bg-slate-300 shadow-xl  ">
       <div className="flex justify-between items-center  mx-auto p-4">
@@ -18,7 +22,8 @@ const NavBar = () => {
         </form>
           <NavLink className="hidden sm:inline hover:underline hover:cursor-pointer " to="/">Home</NavLink>
           <NavLink className="hidden sm:inline hover:underline hover:cursor-pointer " to ="/about">About</NavLink>
-          <NavLink className=" sm:inline hover:underline hover:cursor-pointer "  to="signin">Sign in</NavLink>
+          {user ? <NavLink to="/profile"> <img className="rounded-full h-7 w-7 object-cover" src={user.avatar} alt="profile" /> </NavLink> :  <NavLink className=" sm:inline hover:underline hover:cursor-pointer "  to="signin">Sign in</NavLink> }
+         
         </ul>
       </div>
     </header>

@@ -9,6 +9,7 @@ import NavBar from "./components/NavBar";
 import { BrowserRouter } from "react-router-dom";
 import Spinner from "./components/Spinner";
 import {useSelector, useDispatch} from 'react-redux'
+import Profile from "./pages/Profile";
 import { setLoading } from "./redux/features/loadingSlice";
 
 const App = () => {
@@ -25,6 +26,7 @@ const App = () => {
           <Route path="/signup" element={<SignUp />} />
           <Route path="/signin" element={<SignIn />} />
           <Route path="/about" element={<About />} />
+          <Route path="/profile" element= {<Profile />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter> }
