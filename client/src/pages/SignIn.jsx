@@ -6,6 +6,7 @@ import { useSelector, useDispatch } from "react-redux";
 import {setLoading, hideLoading} from "../redux/features/loadingSlice";
 import cookie from 'cookie-parser';
 import {setUser} from "../redux/features/userSlice";
+import OAuth from "../components/OAuth";
 
 import {useNavigate } from "react-router-dom";
 const SignIn = () => {
@@ -104,6 +105,7 @@ const SignIn = () => {
             >
               Sign In
             </button>
+            <OAuth />
           </div>
         </form>
 

@@ -5,6 +5,7 @@ import { message } from "antd";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { setLoading, hideLoading } from "../redux/features/loadingSlice";
+import OAuth from "../components/OAuth";
 const SignUp = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -122,6 +123,7 @@ const SignUp = () => {
             >
               Sign up
             </button>
+            <OAuth />
           </div>
         </form>
 
