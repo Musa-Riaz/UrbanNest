@@ -39,7 +39,7 @@ const SignIn = () => {
       dispatch(hideLoading());
       dispatch(setAuth(false));
       console.log(err);
-      message.error(err.message);
+      message.error(err.response.data.message);
     }
   };
 

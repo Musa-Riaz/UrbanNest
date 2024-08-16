@@ -1,6 +1,6 @@
 const {catchAsync} = require("../middlewares/catchAsync");
 const userModel = require("../models/userModel");
-const ErrorHandler = require("../middlewares/errorMiddleware");
+const {ErrorHandler} = require("../middlewares/errorMiddleware");
 
 exports.updateUserController = catchAsync( async (req, res, next) =>{
     const {name, email, password} = req.body;
