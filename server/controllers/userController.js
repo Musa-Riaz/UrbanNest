@@ -22,7 +22,7 @@ exports.updateUserController = catchAsync( async (req, res, next) =>{
                 password: req.body.password,
                 avatar: req.body.avatar
             }
-        });
+        }, {new: true});
 
         res.status(200).json({
             success: "true",
@@ -36,3 +36,4 @@ exports.updateUserController = catchAsync( async (req, res, next) =>{
         return next(new ErrorHandler(err.message, 500));
     }
 });
+
