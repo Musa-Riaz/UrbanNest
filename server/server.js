@@ -5,6 +5,7 @@ const morgan = require("morgan");
 const dotenv = require("dotenv");
 const userRouter = require("./routes/userRouter");
 const authRouter = require("./routes/authRouter");
+const listingRouter = require("./routes/listingRouter");
 const cookieParser = require("cookie-parser");
 const {errorMiddleware} = require("./middlewares/errorMiddleware");
 const app = express();
@@ -27,6 +28,7 @@ app.use(cookieParser({ }));
 
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/user", userRouter);
+app.use("/api/v1/lisiting", listingRouter);
 
 
 app.use(errorMiddleware);

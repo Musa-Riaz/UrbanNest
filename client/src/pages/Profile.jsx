@@ -198,6 +198,13 @@ const Profile = () => {
             >
               Update
             </button>
+            <button
+            type="button"
+              className="mt-2 bg-green-600 text-white rounded-lg p-3 uppercase hover:opacity-95  w-96"
+              onClick = {() => navigate("/create-listing")} 
+            >
+              Create Listing
+            </button>
           </form>
           <div className="flex justify-evenly mt-5 ">
             <span
