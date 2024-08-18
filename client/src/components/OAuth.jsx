@@ -22,11 +22,11 @@ const OAuth = () => {
                 email: result.user.email,
                 googleId: result.user.uid,
                 avatar: result.user.photoURL
-            });
+            }, {withCredentials: true});
             if(res.data.success){
                 dispatch(setUser(res.data.user));
                 dispatch(setAuth(true));
-                localStorage.setItem("access_token", res.data.token);
+                localStorage.setItem("token", res.data.token);
                 message.success("Successfully signed in with Google");
                 navigate("/")
             }

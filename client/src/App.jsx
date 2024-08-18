@@ -15,6 +15,7 @@ import { setLoading } from "./redux/features/loadingSlice";
 const App = () => {
 
   const {isLoading} = useSelector((state) => state.loading);
+  const {isAuthorized} = useSelector((state) => state.user);
 
   return (
     <>
@@ -26,7 +27,8 @@ const App = () => {
           <Route path="/signup" element={<SignUp />} />
           <Route path="/signin" element={<SignIn />} />
           <Route path="/about" element={<About />} />
-          <Route path="/profile" element= {<Profile />} />
+          {isAuthorized && <Route path="/profile" element= {<Profile />} />}
+          
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter> }

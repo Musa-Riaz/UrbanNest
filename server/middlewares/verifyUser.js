@@ -7,7 +7,6 @@ exports.verifyUser = async (req, res, next) => {
     const token = req.cookies.access_token;
     
     if(!token){
-        console.log(req);
         return next(new ErrorHandler("Please login to access this route", 401));
     }
     jwt.verify(token, process.env.JWT_SECRET, async (err,decoded) =>{

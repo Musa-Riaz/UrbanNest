@@ -94,9 +94,7 @@ exports.userGoogleController = catchAsync(async (req, res, next) => {
 
 exports.userSignOutController = (req, res) =>{
   
-  res.clearCookie("access_token", {
-      httpOnly: true,
-  });
+  res.clearCookie("access_token");
   res.status(200).json({
       success: true,
       message: "User signed out successfully"

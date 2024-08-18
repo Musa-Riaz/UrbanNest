@@ -11,7 +11,7 @@ router.post("/signup", userSignUpController);
 
 router.post("/signin", userSignInController);
 
-router.post("/signout", userSignOutController);
+router.get("/signout", userSignOutController);
 
 router.post("/google", userGoogleController);
 module.exports = router;
