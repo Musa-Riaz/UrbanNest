@@ -7,11 +7,13 @@ import {
 } from "firebase/storage";
 import { app } from "../Firebase/firebase";
 import { useState } from "react";
+import {useNavigate} from 'react-router-dom'
 import { message } from "antd";
 import axios from "axios";
-import { useSelector, useDispatch } from 'react-redux';
-import {setLoading, hideLoading} from '../redux/features/loadingSlice'
+import { useSelector, useDispatch } from "react-redux";
+import { setLoading, hideLoading } from "../redux/features/loadingSlice";
 const CreateListing = () => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.user);
   const [files, setFiles] = useState([]);
@@ -22,20 +24,25 @@ const CreateListing = () => {
   const [type, setType] = useState("");
   const [bedrooms, setBedrooms] = useState("");
   const [bathrooms, setBathrooms] = useState("");
-  const [regularPrice, setRegularPrice] = useState(0);
-  const [discountPrice, setDiscountPrice] = useState(0);
+  const [regularPrice, setRegularPrice] = useState();
+  const [discountPrice, setDiscountPrice] = useState();
   const [offer, setOffer] = useState(false);
   const [furnished, setFurnished] = useState(false);
   const [parking, setParking] = useState(false);
   const [formData, setFormData] = useState({
     imageUrls: [],
-  
   });
 
   const handleCreateListing = async (e) => {
+    if (formData.imageUrls.length < 1)
+      return message.error("Please upload at least one image");
+    if (regularPrice < discountPrice)
+      return message.error(
+        "Regular price cannot be greater than discount price"
+      );
     e.preventDefault();
     try {
-        dispatch(setLoading());
+      dispatch(setLoading());
       const res = await axios.post(
         "http://localhost:3500/api/v1/lisiting/create",
         {
@@ -51,17 +58,17 @@ const CreateListing = () => {
           offer,
           parking,
           furnished,
-          userId: user._id
+          userId: user._id,
         },
         { withCredentials: true }
       );
       dispatch(hideLoading());
-      if(res.data.success){
+      if (res.data.success) {
         message.success("Listing created successfully");
+        navigate(`/listing/${res.data.listing._id}`)
       }
-      
     } catch (err) {
-        dispatch(hideLoading());
+      dispatch(hideLoading());
       console.log(err);
       message.error(err.response.data.message);
     }
@@ -167,26 +174,34 @@ const CreateListing = () => {
           />
           <div className="flex gap-4 flex-wrap">
             <div className="flex gap-2">
-              <input  checked={type === 'sale'} type="checkbox" className="w-5" id="sale" 
-               onChange={(e) => {
-                if (e.target.checked) {
-                  setType("sale");
-                } else {
-                  setType("");
-                }
-              }}
-               />
+              <input
+                checked={type === "sale"}
+                type="checkbox"
+                className="w-5"
+                id="sale"
+                onChange={(e) => {
+                  if (e.target.checked) {
+                    setType("sale");
+                  } else {
+                    setType("");
+                  }
+                }}
+              />
               <span>Sell</span>
             </div>
             <div className="flex gap-2">
-              <input  checked={type === 'rent'} type="checkbox" className="w-5" id="rent" 
-               onChange={(e) => {
-                if (e.target.checked) {
-                  setType("rent");
-                } else {
-                  setType("");
-                }
-              }}
+              <input
+                checked={type === "rent"}
+                type="checkbox"
+                className="w-5"
+                id="rent"
+                onChange={(e) => {
+                  if (e.target.checked) {
+                    setType("rent");
+                  } else {
+                    setType("");
+                  }
+                }}
               />
               <span>Rent</span>
             </div>
@@ -211,7 +226,13 @@ const CreateListing = () => {
               <span>Furnished</span>
             </div>
             <div className="flex gap-2">
-              <input value={offer} onChange={(e) => setOffer(e.target.checked)} type="checkbox" className="w-5" id="offer" />
+              <input
+                value={offer}
+                onChange={(e) => setOffer(e.target.checked)}
+                type="checkbox"
+                className="w-5"
+                id="offer"
+              />
               <span>Offer</span>
             </div>
           </div>
@@ -256,20 +277,22 @@ const CreateListing = () => {
                 <span className="text-sm">($ / month)</span>
               </div>
             </div>
-            <div className="flex items-center gap-2">
-              <input
-                className="p-3 border border-gray-300 rounded-xl"
-                type="number"
-                id="discountPrice"
-                required
-                value={discountPrice}
-                onChange={(e) => setDiscountPrice(Number(e.target.value))}
-              />
-              <div className="flex flex-col items-center">
-                <p>Discount Price</p>
-                <span className="text-sm">($ / month)</span>
+            {offer && (
+              <div className="flex items-center gap-2">
+                <input
+                  className="p-3 border border-gray-300 rounded-xl"
+                  type="number"
+                  id="discountPrice"
+                  required
+                  value={discountPrice}
+                  onChange={(e) => setDiscountPrice(Number(e.target.value))}
+                />
+                <div className="flex flex-col items-center">
+                  <p>Discount Price</p>
+                  <span className="text-sm">($ / month)</span>
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
         <div className="flex flex-col flex-1 ml-2 gap-4 ">
@@ -317,7 +340,10 @@ const CreateListing = () => {
                 </button>
               </div>
             ))}
-          <button onClick={handleCreateListing} className="p-3 bg-slate-700 text-white rounded-lg uppercase hover:opacity-95 disabled:opacity-80">
+          <button
+            onClick={handleCreateListing}
+            className="p-3 bg-slate-700 text-white rounded-lg uppercase hover:opacity-95 disabled:opacity-80"
+          >
             Create List
           </button>
         </div>
