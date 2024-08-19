@@ -17,7 +17,7 @@ const listingSchema = new mongoose.Schema(
       type: Number,
       required: [true, "Regular price is required"],
     },
-    discountedPrice: {
+    discountPrice: {
       type: Number,
       required: [true, "Discounted price is required"],
     },
@@ -50,7 +50,7 @@ const listingSchema = new mongoose.Schema(
       type: [String],
       required: true
     },
-    userData: {
+    userId: {
       type: String,
       required: true,
     },
