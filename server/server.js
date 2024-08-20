@@ -28,7 +28,7 @@ app.use(cookieParser({ }));
 
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/user", userRouter);
-app.use("/api/v1/lisiting", listingRouter);
+app.use("/api/v1/listing", listingRouter);
 
 
 app.use(errorMiddleware);

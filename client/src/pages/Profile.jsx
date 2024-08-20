@@ -1,6 +1,7 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Navigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { message } from "antd";
 import { useRef, useState, useEffect } from "react";
 import { setUser } from "../redux/features/userSlice";
@@ -15,11 +16,13 @@ import {
 } from "firebase/storage";
 import { app } from "../Firebase/firebase";
 import axios from "axios";
+import {setListing} from '../redux/features/listingSlice'
 import { FaWindows } from "react-icons/fa";
 
 const Profile = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [userListings, setUserListings] = useState();
   const [file, setFile] = useState(undefined);
   const [uploadPercentage, setUploadPercentage] = useState(0);
   const [fileUploadError, setFileUploadError] = useState(false);
@@ -124,6 +127,7 @@ const Profile = () => {
         message.success(res.data.message);
         dispatch(setUser(null));
         dispatch(setAuth(false));
+        dispatch(setListing(null));
         localStorage.removeItem("token");
         localStorage.removeItem("persist:root");
         navigate("/signin");
@@ -132,6 +136,43 @@ const Profile = () => {
       console.log(err);
     }
   };
+
+  const handleShowListing = async () => {
+    try {
+      const res = await axios.get(
+        `http://localhost:3500/api/v1/user/listing/${user._id}`,
+        { withCredentials: true }
+      );
+      if (res.data.success) {
+        console.log(res.data.listing);
+        setUserListings(res.data.listing);
+      }
+    } catch (err) {
+      console.log(err);
+      message.error(err.response.data.message);
+    }
+  };
+
+  const handleDeleteListing = async (listingId) => {
+    try {
+      const res = await axios.delete(
+        `http://localhost:3500/api/v1/listing/delete/${listingId}`,
+        { withCredentials: true }
+      );
+      if (res.data.success) {
+        // setUserListings([...userListings, setUserListings.filter((_, id) => id !== listingId)]);
+        message.success("Listing deleted successfully");
+        window.location.reload();
+      }
+    } catch (err) {
+      console.log(err);
+      message.error(err.response.data.message);
+    }
+  };
+
+  const handleUpdateListing = async ()=> {
+    
+  }
 
   return (
     <div>
@@ -199,12 +240,59 @@ const Profile = () => {
               Update
             </button>
             <button
-            type="button"
+              type="button"
               className="mt-2 bg-green-600 text-white rounded-lg p-3 uppercase hover:opacity-95  w-96"
-              onClick = {() => navigate("/create-listing")} 
+              onClick={() => navigate("/create-listing")}
             >
               Create Listing
             </button>
+            <button
+              type="button"
+              className="text-green-700 mt-5 text-xl"
+              onClick={handleShowListing}
+            >
+              Show Listings
+            </button>
+            <div className="flex flex-col w-[20rem] sm:w-[50rem]">
+            <h1 className="text-center my-4 text-3xl">Your Listings</h1>{" "}
+              {userListings &&
+                userListings?.map((list) => (
+                  <>
+                    <div
+                      className="mt-10 flex w-full justify-between border items-center gap-4"
+                      key={list._id}
+                    >
+                      <Link to={`/listing/${list._id}`}>
+                        {" "}
+                        <img
+                          src={list.imageUrls[0]}
+                          alt="img"
+                          className="h-16 w-16 object-contain  "
+                        />{" "}
+                      </Link>
+                      <Link
+                        to={`/listing/${list._id}`}
+                        className="hover:underline truncate text-xl font-semibold flex-1"
+                      >
+                        {" "}
+                        {list.name}{" "}
+                      </Link>
+                      <div className="flex gap-2 flex-col-reverse">
+                        <button
+                          type="button"
+                          onClick={() => handleDeleteListing(list._id)}
+                          className="bg-red-600 text-white rounded-lg w-16"
+                        >
+                          Delete
+                        </button>
+                        <button type="button" onClick={()=>navigate(`/update-listing/${list._id}`)} className="bg-green-400 text-white rounded-lg w-16">
+                          Edit
+                        </button>
+                      </div>
+                    </div>
+                  </>
+                ))}
+            </div>
           </form>
           <div className="flex justify-evenly mt-5 ">
             <span

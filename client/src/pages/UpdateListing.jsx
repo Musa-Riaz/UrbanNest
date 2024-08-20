@@ -6,36 +6,71 @@ import {
   getDownloadURL,
 } from "firebase/storage";
 import { app } from "../Firebase/firebase";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {useNavigate} from 'react-router-dom'
 import { message } from "antd";
-import { setListing } from '../redux/features/listingSlice'
 import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
 import { setLoading, hideLoading } from "../redux/features/loadingSlice";
-const CreateListing = () => {
-  const {listing} = useSelector((state) => state.listing);
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
+import { setListing } from '../redux/features/listingSlice'
+import {useParams} from "react-router-dom"
+
+
+const UpdateListing = () => {
+    const dispatch = useDispatch();
+    const { listing } = useSelector((state) => state.listing);
+    let {id} = useParams();
+    console.log(id)
+    const getUserListing = async () => {
+        try{
+            dispatch(setLoading());
+            const res = await axios.get(`http://localhost:3500/api/v1/user/single-listing/${id}`, {withCredentials: true});
+            dispatch(hideLoading());
+            if(res.data.success){
+                console.log(res.data.listing);
+                dispatch(setListing(res.data.listing));
+            }
+            else{
+                dispatch(hideLoading());
+                message.error("Failed to fetch listing");
+            }
+        }
+        catch(err){
+            console.log()
+        }
+      }
+    
+      useEffect(() => {
+        dispatch(setListing(null))
+        getUserListing();
+        dispatch(hideLoading())
+      }, []);
+
+
+const navigate = useNavigate();
+  
   const { user } = useSelector((state) => state.user);
   const [files, setFiles] = useState([]);
   const [uploading, setUploading] = useState(false);
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [address, setAddress] = useState("");
-  const [type, setType] = useState("");
-  const [bedrooms, setBedrooms] = useState("");
-  const [bathrooms, setBathrooms] = useState("");
-  const [regularPrice, setRegularPrice] = useState();
-  const [discountPrice, setDiscountPrice] = useState();
-  const [offer, setOffer] = useState(false);
-  const [furnished, setFurnished] = useState(false);
-  const [parking, setParking] = useState(false);
+  const [name, setName] = useState(listing?.name);
+  const [description, setDescription] = useState(listing?.description);
+  const [address, setAddress] = useState(listing?.address);
+  const [type, setType] = useState(listing?.type);
+  const [bedrooms, setBedrooms] = useState(listing?.bedrooms);
+  const [bathrooms, setBathrooms] = useState(listing?.bathrooms);
+  const [regularPrice, setRegularPrice] = useState(listing?.regularPrice);
+  const [discountPrice, setDiscountPrice] = useState(listing?.discountPrice);
+  const [offer, setOffer] = useState(listing?.offer);
+  const [furnished, setFurnished] = useState(listing?.furnished);
+  const [parking, setParking] = useState(listing?.parking);
   const [formData, setFormData] = useState({
-    imageUrls: [],
+    imageUrls: listing?.imageUrls,
   });
 
-  const handleCreateListing = async (e) => {
+ 
+  
+  
+  const handleUpdateListing = async (e) => {
     if (formData.imageUrls.length < 1)
       return message.error("Please upload at least one image");
     if (regularPrice < discountPrice)
@@ -46,28 +81,30 @@ const CreateListing = () => {
     try {
       dispatch(setLoading());
       const res = await axios.post(
-        "http://localhost:3500/api/v1/listing/create",
+        `http://localhost:3500/api/v1/listing/update/${listing?._id}`,
         {
-          imageUrls: formData.imageUrls,
-          name,
-          description,
-          address,
-          type,
-          bedrooms,
-          bathrooms,
-          regularPrice,
-          discountPrice,
-          offer,
-          parking,
-          furnished,
-          userId: user._id,
-        },
+            imageUrls: formData.imageUrls,
+            name,
+            description,
+            address,
+            type,
+            bedrooms,
+            bathrooms,
+            regularPrice,
+            discountPrice,
+            offer,
+            parking,
+            furnished,
+            userId: user._id,
+          },
+        
         { withCredentials: true }
       );
       dispatch(hideLoading());
       if (res.data.success) {
-        message.success("Listing created successfully");
-        navigate(`/listing/${user._id}`)
+        message.success("Listing updated successfully");
+        dispatch(setListing(null));
+        navigate(`/profile`)
       }
     } catch (err) {
       dispatch(hideLoading());
@@ -141,8 +178,10 @@ const CreateListing = () => {
   };
 
   return (
-    <main className="p-3 max-w-4xl mx-auto">
-      <h1 className="text-4xl font-bold text-center my-7">Create Heading</h1>
+
+    <>
+       <main className="p-3 max-w-4xl mx-auto">
+      <h1 className="text-4xl font-bold text-center my-7">Update Heading</h1>
       <form action="" className="flex flex-col sm:flex-row gap-4">
         <div className="flex flex-col gap-4 flex-1">
           <input
@@ -323,7 +362,7 @@ const CreateListing = () => {
               {uploading ? "Uploading..." : "Upload"}
             </button>
           </div>
-          {formData.imageUrls.length > 0 &&
+          {formData?.imageUrls?.length > 0 &&
             formData.imageUrls.map((item, index) => (
               <div
                 key={item}
@@ -343,15 +382,16 @@ const CreateListing = () => {
               </div>
             ))}
           <button
-            onClick={handleCreateListing}
+            onClick={handleUpdateListing}
             className="p-3 bg-slate-700 text-white rounded-lg uppercase hover:opacity-95 disabled:opacity-80"
           >
-            Create List
+            Update List
           </button>
         </div>
       </form>
     </main>
-  );
-};
+    </>
+  )
+}
 
-export default CreateListing;
+export default UpdateListing

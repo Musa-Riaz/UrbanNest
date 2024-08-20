@@ -13,6 +13,7 @@ import { useSelector, useDispatch } from "react-redux";
 import Profile from "./pages/Profile";
 import { setLoading } from "./redux/features/loadingSlice";
 import PrivateRoute from "./components/PrivateRoute";
+import UpdateListing from "./pages/UpdateListing";
 
 const App = () => {
   const { isLoading } = useSelector((state) => state.loading);
@@ -43,6 +44,14 @@ const App = () => {
               element={
                 <PrivateRoute>
                   <CreateListing />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/update-listing/:id"
+              element={
+                <PrivateRoute>
+                  <UpdateListing />
                 </PrivateRoute>
               }
             />
