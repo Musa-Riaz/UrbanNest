@@ -20,7 +20,6 @@ const UpdateListing = () => {
     const dispatch = useDispatch();
     const { listing } = useSelector((state) => state.listing);
     let {id} = useParams();
-    console.log(id)
     const getUserListing = async () => {
         try{
             dispatch(setLoading());
@@ -41,7 +40,6 @@ const UpdateListing = () => {
       }
     
       useEffect(() => {
-        dispatch(setListing(null))
         getUserListing();
         dispatch(hideLoading())
       }, []);
@@ -52,21 +50,41 @@ const navigate = useNavigate();
   const { user } = useSelector((state) => state.user);
   const [files, setFiles] = useState([]);
   const [uploading, setUploading] = useState(false);
-  const [name, setName] = useState(listing?.name);
-  const [description, setDescription] = useState(listing?.description);
-  const [address, setAddress] = useState(listing?.address);
-  const [type, setType] = useState(listing?.type);
-  const [bedrooms, setBedrooms] = useState(listing?.bedrooms);
-  const [bathrooms, setBathrooms] = useState(listing?.bathrooms);
-  const [regularPrice, setRegularPrice] = useState(listing?.regularPrice);
-  const [discountPrice, setDiscountPrice] = useState(listing?.discountPrice);
-  const [offer, setOffer] = useState(listing?.offer);
-  const [furnished, setFurnished] = useState(listing?.furnished);
-  const [parking, setParking] = useState(listing?.parking);
+  const [name, setName] = useState();
+  const [description, setDescription] = useState();
+  const [address, setAddress] = useState();
+  const [type, setType] = useState();
+  const [bedrooms, setBedrooms] = useState();
+  const [bathrooms, setBathrooms] = useState();
+  const [regularPrice, setRegularPrice] = useState();
+  const [discountPrice, setDiscountPrice] = useState();
+  const [offer, setOffer] = useState();
+  const [furnished, setFurnished] = useState();
+  const [parking, setParking] = useState();
   const [formData, setFormData] = useState({
-    imageUrls: listing?.imageUrls,
+    imageUrls:[],
   });
 
+  useEffect(()=> {
+
+    if(listing){
+      setName(listing.name);
+      setDescription(listing.description);
+      setAddress(listing.address);
+      setType(listing.type);
+      setBedrooms(listing.bedrooms);
+      setBathrooms(listing.bathrooms);
+      setRegularPrice(listing.regularPrice);
+      setDiscountPrice(listing.discountPrice);
+      setOffer(listing.offer);
+      setFurnished(listing.furnished);
+      setParking(listing.parking);
+      setFormData({
+        imageUrls: listing.imageUrls,
+      });
+    }
+
+  }, [listing]);
  
   
   

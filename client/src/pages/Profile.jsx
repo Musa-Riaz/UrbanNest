@@ -277,7 +277,7 @@ const Profile = () => {
                         {" "}
                         {list.name}{" "}
                       </Link>
-                      <div className="flex gap-2 flex-col-reverse">
+                      <div className="flex gap-2 flex-col-reverse ">
                         <button
                           type="button"
                           onClick={() => handleDeleteListing(list._id)}
@@ -294,7 +294,7 @@ const Profile = () => {
                 ))}
             </div>
           </form>
-          <div className="flex justify-evenly mt-5 ">
+          <div className="flex justify-evenly my-5 ">
             <span
               onClick={handleDeleteUser}
               className=" font-bold text-red-500 hover:cursor-pointer"

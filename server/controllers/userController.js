@@ -91,7 +91,7 @@ exports.userListingController = catchAsync(async (req, res, next) => {
 
 exports.getListingController = catchAsync(async (req, res, next) => {
   try {
-    const listing = await listingModel.findOne({ id: req.id });
+    const listing = await listingModel.findById( req.params.id );
     if (listing) {
       res.status(200).json({
         success: true,
