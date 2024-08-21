@@ -67,7 +67,7 @@ const CreateListing = () => {
       dispatch(hideLoading());
       if (res.data.success) {
         message.success("Listing created successfully");
-        navigate(`/listing/${user._id}`)
+        navigate(`/listing/${res.data.listing._id}`)
       }
     } catch (err) {
       dispatch(hideLoading());

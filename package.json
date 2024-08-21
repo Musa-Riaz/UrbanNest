@@ -21,6 +21,7 @@
     "mongoose": "^8.5.2",
     "morgan": "^1.10.0",
     "nodemon": "^3.1.4",
+    "swiper": "^11.1.10",
     "validator": "^13.12.0"
   }
 }

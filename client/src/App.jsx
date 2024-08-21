@@ -14,6 +14,7 @@ import Profile from "./pages/Profile";
 import { setLoading } from "./redux/features/loadingSlice";
 import PrivateRoute from "./components/PrivateRoute";
 import UpdateListing from "./pages/UpdateListing";
+import Listing from "./pages/Listing";
 
 const App = () => {
   const { isLoading } = useSelector((state) => state.loading);
@@ -30,7 +31,7 @@ const App = () => {
             <Route path="/signup" element={<SignUp />} />
             <Route path="/signin" element={<SignIn />} />
             <Route path="/about" element={<About />} />
-
+            <Route path="/listing/:id" element={<Listing />} />
             <Route
               path="/profile"
               element={

@@ -65,6 +65,7 @@ const navigate = useNavigate();
     imageUrls:[],
   });
 
+  //setting the states in useffect because the states were not being set early before
   useEffect(()=> {
 
     if(listing){
