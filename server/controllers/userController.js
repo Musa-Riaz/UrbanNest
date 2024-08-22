@@ -105,3 +105,29 @@ exports.getListingController = catchAsync(async (req, res, next) => {
     console.log(err);
   }
 });
+
+
+exports.getUserController = catchAsync ( async (req, res, next) => {
+  try{
+
+    // if(req.user.id !== req.params.id){
+    //   return next(new ErrorHandler("Unauthorized", 403));
+    // }
+
+    const user = await userModel.findById(req.params.id);
+    if(user){
+      res.status(200).json({
+        success: true,
+        message: "User fetched successfully",
+        user
+      })
+    }
+    else{
+      return next(new ErrorHandler("There was an error in the get user controller", 400));
+    }
+
+  }
+  catch(err){
+    console.log(err);
+  }
+})
