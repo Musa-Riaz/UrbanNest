@@ -7,6 +7,7 @@ import About from "./pages/About";
 import NotFound from "./pages/NotFound";
 import CreateListing from "./pages/CreateListing";
 import NavBar from "./components/NavBar";
+import Search from './pages/Search'
 import { BrowserRouter } from "react-router-dom";
 import Spinner from "./components/Spinner";
 import { useSelector, useDispatch } from "react-redux";
@@ -32,6 +33,7 @@ const App = () => {
             <Route path="/signin" element={<SignIn />} />
             <Route path="/about" element={<About />} />
             <Route path="/listing/:id" element={<Listing />} />
+            <Route path = "/search" element={<Search />} />
             <Route
               path="/profile"
               element={
