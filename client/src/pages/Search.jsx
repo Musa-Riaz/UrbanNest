@@ -5,6 +5,7 @@ import { message } from 'antd';
 import axios from 'axios';
 import { useDispatch } from "react-redux";
 import {setLoading, hideLoading} from '../redux/features/loadingSlice'
+import ListingItem from "../components/ListingItem";
 const Search = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -88,7 +89,7 @@ const Search = () => {
             console.log(res.data.listings);
             setListing(res.data.listings);
         }
-        
+
     }
     catch(err){
         dispatch(hideLoading());
@@ -206,6 +207,12 @@ const Search = () => {
         <h1 className="text-3xl font-bold border-b p-3 text-slate-700 mt-5">
           Listing Results
         </h1>
+        <div className="mx-2 mb-6 flex flex-wrap gap-2 ">
+            { listing?.length === 0 && (<p className="text-xl text-slate-700">No listing found</p>)}
+            {listing && listing.map((listing) => (
+                <ListingItem key={listing._id} listing={listing} />
+            ))}
+        </div>
       </div>
     </div>
   );
