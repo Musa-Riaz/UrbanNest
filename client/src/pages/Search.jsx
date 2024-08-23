@@ -1,14 +1,15 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { message } from 'antd';
-import axios from 'axios';
+import { message } from "antd";
+import axios from "axios";
 import { useDispatch } from "react-redux";
-import {setLoading, hideLoading} from '../redux/features/loadingSlice'
+import { setLoading, hideLoading } from "../redux/features/loadingSlice";
 import ListingItem from "../components/ListingItem";
 const Search = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [showMore, setShowMore] = useState(false);
   const [listing, setListing] = useState();
   const [searchTerm, setSearchTerm] = useState("");
   const [type, setType] = useState("all");
@@ -23,34 +24,34 @@ const Search = () => {
     setOrder(e.target.value.split("_")[1]) || "desc";
   };
 
-//   useEffect(() => {
-//     const urlParams = new URLSearchParams(location.search);
-//     const searchTermFromUrl = urlParams.get("searchTerm");
-//     const typeFromUrl = urlParams.get("type");
-//     const parkingFromUrl = urlParams.get("parking");
-//     const furnishedFromUrl = urlParams.get("furnished");
-//     const offerFromUrl = urlParams.get("offer");
-//     const sortFromUrl = urlParams.get("sort");
-//     const orderFromUrl = urlParams.get("order");
+  //   useEffect(() => {
+  //     const urlParams = new URLSearchParams(location.search);
+  //     const searchTermFromUrl = urlParams.get("searchTerm");
+  //     const typeFromUrl = urlParams.get("type");
+  //     const parkingFromUrl = urlParams.get("parking");
+  //     const furnishedFromUrl = urlParams.get("furnished");
+  //     const offerFromUrl = urlParams.get("offer");
+  //     const sortFromUrl = urlParams.get("sort");
+  //     const orderFromUrl = urlParams.get("order");
 
-//     if(offerFromUrl,
-//         sortFromUrl ,
-//         orderFromUrl,
-//         furnishedFromUrl,
-//         parkingFromUrl,
-//         typeFromUrl,
-//         searchTermFromUrl 
-//     ){
-//         setSearchTerm(searchTermFromUrl);
-//         setParking(parkingFromUrl);
-//         setFurnished(furnishedFromUrl);
-//         setOffer(offerFromUrl);
-//         setSort(sortFromUrl);
-//         setOrder(orderFromUrl);
-//         setType(typeFromUrl);
-//     }
+  //     if(offerFromUrl,
+  //         sortFromUrl ,
+  //         orderFromUrl,
+  //         furnishedFromUrl,
+  //         parkingFromUrl,
+  //         typeFromUrl,
+  //         searchTermFromUrl
+  //     ){
+  //         setSearchTerm(searchTermFromUrl);
+  //         setParking(parkingFromUrl);
+  //         setFurnished(furnishedFromUrl);
+  //         setOffer(offerFromUrl);
+  //         setSort(sortFromUrl);
+  //         setOrder(orderFromUrl);
+  //         setType(typeFromUrl);
+  //     }
 
-//   }, [location.search]);
+  //   }, [location.search]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -67,42 +68,60 @@ const Search = () => {
     navigate(`/search?${searchQuery}`);
   };
 
-
-  const handleClear = ()=>{
+  const handleClear = () => {
     setSearchTerm("");
     setFurnished(false);
     setParking(false);
     setOffer(false);
     setSort("created-at");
     setOrder("desc");
-    setType('all');
-  }
+    setType("all");
+  };
 
-  const fetchListings = async() => {
-    try{
-        dispatch(setLoading());
-        const urlParams = new URLSearchParams(location.search);
-        const searchQuery = urlParams.toString();
-        const res = await axios.get(`http://localhost:3500/api/v1/listing/get-listings?${searchQuery}`);
-        dispatch(hideLoading());
-        if(res.data.success){
-            console.log(res.data.listings);
-            setListing(res.data.listings);
+  const fetchListings = async () => {
+    try {
+      dispatch(setLoading());
+      setShowMore(false);
+      const urlParams = new URLSearchParams(location.search);
+      const searchQuery = urlParams.toString();
+      const res = await axios.get(
+        `http://localhost:3500/api/v1/listing/get-listings?${searchQuery}`
+      );
+      dispatch(hideLoading());
+      if (res.data.success) {
+        console.log(res.data.listings);
+        if (res.data.listings > 8) {
+          setShowMore(true);
         }
-
+        else{
+          setShowMore(false);
+        }
+        setListing(res.data.listings);
+      }
+    } catch (err) {
+      dispatch(hideLoading());
+      console.log(err);
+      message.error(err.response.data.message);
     }
-    catch(err){
-        dispatch(hideLoading());
-        console.log(err);
-        message.error(err.response.data.message);
-    }
-  }
+  };
 
-  useEffect(()=>{
-
+  useEffect(() => {
     fetchListings();
     dispatch(hideLoading());
-  }, [location.search])
+  }, [location.search]);
+
+  const onShowMoreClick = async ()=>{
+
+    const urlParams = new URLSearchParams(location.search);
+    const startIndex = listing.length;
+    urlParams.set('startIndex', startIndex);
+    const searchQuery = urlParams.toString();
+    const res = await axios.get(`http://localhost:3500/api/v1/listing/get-listings?${searchQuery}`);
+    if(res.data.listings < 9){
+      setShowMore(false);
+    }
+    setListing([...listing, ...res.data.listings]);
+  }
 
   return (
     <div className=" flex flex-col md:flex-row ">
@@ -155,7 +174,7 @@ const Search = () => {
                 type="checkbox"
                 className="w-5"
                 value={offer}
-                checked = {offer}
+                checked={offer}
                 onChange={(e) => setOffer(e.target.checked)}
               />
               <span>Offer</span>
@@ -198,7 +217,11 @@ const Search = () => {
           <button className="bg-slate-700 text-white hover:opacity-95 h-14 rounded-lg text-xl">
             Search
           </button>
-          <button type="button" onClick={handleClear} className="bg-slate-200 text-slate-700 hover:opacity-90 h-14 rounded-lg text-xl">
+          <button
+            type="button"
+            onClick={handleClear}
+            className="bg-slate-200 text-slate-700 hover:opacity-90 h-14 rounded-lg text-xl"
+          >
             Clear Search
           </button>
         </form>
@@ -208,10 +231,15 @@ const Search = () => {
           Listing Results
         </h1>
         <div className="mx-2 mb-6 flex flex-wrap gap-2 ">
-            { listing?.length === 0 && (<p className="text-xl text-slate-700">No listing found</p>)}
-            {listing && listing.map((listing) => (
-                <ListingItem key={listing._id} listing={listing} />
+          {listing?.length === 0 && (
+            <p className="text-xl text-slate-700">No listing found</p>
+          )}
+          {listing &&
+            listing.map((listing) => (
+              <ListingItem key={listing._id} listing={listing} />
             ))}
+
+          {showMore && <button onClick={onShowMoreClick}>Show More</button>}
         </div>
       </div>
     </div>
